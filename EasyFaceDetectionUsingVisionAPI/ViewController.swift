@@ -13,7 +13,95 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+      
+
+// /---------------------------------------------------------------------------------------------------/
+        
+        // Do any additional setup after loading the view.
+    }
+    
+    
+    @IBAction func Button1(_ sender: UIButton) {
+        
+       
+        
+        print("YOU CLICK B1")
+        guard let image = UIImage(named: "sample1") else {return}
+        
+        FaceDetection(imageFace: image)
+        
+    }
+     @IBAction func Button2(_ sender: UIButton) {
+        
+        print("YOU CLICK B2")
+        
+        
+        
+        guard let image = UIImage(named: "sample2") else {return}
+        
+        FaceDetection(imageFace: image)
+       
+    }
+    
+   
+    @IBAction func clearBTN(_ sender: UIButton) {
+        
+        for v in view.subviews{
+            if v is UIImageView , v is UIView {
+                v.removeFromSuperview()
+            }
+        }
+        
+    }
+    
+    
+    
+    @IBAction func button3(_ sender: Any) {
+        
+        
+        guard let image = UIImage(named: "sample3") else {return}
+        
+        FaceDetection(imageFace: image)
+    
+    }
+     @IBAction func button4(_ sender: Any) {
+        
+        
+        guard let image = UIImage(named: "sample4") else {return}
+        
+        
+        FaceDetection(imageFace: image)
+        
+    }
+    
+    
+    @IBAction func button5(_ sender: Any) {
+        
+        
         guard let image = UIImage(named: "sample5") else {return}
+        
+       FaceDetection(imageFace: image)
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    func FaceDetection(imageFace:UIImage) {
+        
+        for v in view.subviews{
+            if v is UIImageView , v is UIView {
+                v.removeFromSuperview()
+            }
+        }
+        
+        
+        let image = imageFace
+        
+        
         
         
         let imageView = UIImageView(image: image)
@@ -26,7 +114,8 @@ class ViewController: UIViewController {
         
         imageView.backgroundColor = .black
         
-        view.backgroundColor = .black
+        view.backgroundColor = .red
+        
         
         view.addSubview(imageView)
         
@@ -37,7 +126,7 @@ class ViewController: UIViewController {
                 return
             }
             
-           
+            
             
             req.results?.forEach({ (res) in
                 
@@ -51,21 +140,22 @@ class ViewController: UIViewController {
                     let y = sceledHeight * (1 - faceObservation.boundingBox.origin.y) - ( 0.4 * height)
                     let width = self.view.frame.width * faceObservation.boundingBox.width
                     
-                    let redView = UIView()
-                    redView.backgroundColor = .white
+                     let redView = UIView()
+                    
+                    redView.backgroundColor = .red
                     redView.alpha = 0.4
                     redView.frame = CGRect(x: x, y: y, width: width, height: height)
                     
                     self.view.addSubview(redView)
                     print(faceObservation.boundingBox)
                 }
-               
+                
             })
             
         }
         
         guard let cgImage = image.cgImage else {return}
-       
+        
         DispatchQueue.global(qos: .background).async {
             
             let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
@@ -79,12 +169,12 @@ class ViewController: UIViewController {
                 
             }
         }
-
-// /---------------------------------------------------------------------------------------------------/
+        
+        // /---------------------------------------------------------------------------------------------------/
         
         // Do any additional setup after loading the view.
+        
     }
-
-
+    
 }
 
