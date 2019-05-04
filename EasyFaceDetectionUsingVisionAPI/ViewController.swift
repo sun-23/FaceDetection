@@ -48,9 +48,11 @@ class ViewController: UIViewController {
         
         for v in view.subviews{
             if v is UIImageView , v is UIView {
-                v.removeFromSuperview()
+                v.removeFromSuperview()   // ล้างภาพ
             }
         }
+        FaceView?.forEach({$0.removeFromSuperview()}) // ล้างตัวจับภาพ
+        
         
     }
     
@@ -86,35 +88,40 @@ class ViewController: UIViewController {
     
     
     
-    
-    
+    var FaceView: [UIView]? // เป็น UIView
+    let imageView: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFit
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
+ 
     
     
     func FaceDetection(imageFace:UIImage) {
         
+        FaceView?.forEach({$0.removeFromSuperview()}) // ล้างตัวจับภาพ
+        
         for v in view.subviews{
             if v is UIImageView , v is UIView {
-                v.removeFromSuperview()
+                v.removeFromSuperview() // ล้างภาพ
             }
         }
         
         
         let image = imageFace
         
-        
-        
-        
-        let imageView = UIImageView(image: image)
-        imageView.contentMode = .scaleAspectFit
+         imageView.image =  imageFace
         
         let sceledHeight = view.frame.width / image.size.width * image.size.height
+         let imageScaledHeight = view.frame.size.width / image.size.width * image.size.height
         
         
-        imageView.frame = CGRect(x: 0, y: 50, width: view.frame.width, height: sceledHeight)
+        imageView.frame = CGRect(x: 0, y: view.frame.height - ( view.frame.height / 2 + sceledHeight / 2 ), width: view.frame.width, height: sceledHeight)
         
         imageView.backgroundColor = .black
         
-        view.backgroundColor = .green
+        view.backgroundColor = .black
         
         
         view.addSubview(imageView)
@@ -126,7 +133,7 @@ class ViewController: UIViewController {
                 return
             }
             
-            
+               self.FaceView = [] // FaceView เป็น array ที่ให้ detectView ไปใส่ค่าใน FaceView ที่เป็น UIView
             
             req.results?.forEach({ (res) in
                 
@@ -134,20 +141,50 @@ class ViewController: UIViewController {
                     
                     guard let faceObservation = res as? VNFaceObservation else {return}
                     
+                    
+                    let rect = faceObservation.boundingBox
+                    
+                    let transformFlip = CGAffineTransform.init(scaleX: 1, y: -1).translatedBy(x: 0, y: -imageScaledHeight - self.view.frame.height / 2  + imageScaledHeight / 2)
+                    let transformScale = CGAffineTransform.identity.scaledBy(x: self.view.frame.width, y: imageScaledHeight)
+                    let converted_rect = rect.applying(transformScale).applying(transformFlip)
+                    
                     // ระบุตำแหน่งของ faceObservation
                     let x = self.view.frame.width * faceObservation.boundingBox.origin.x
                     let height = sceledHeight * faceObservation.boundingBox.height
-                    let y = sceledHeight * (1 - faceObservation.boundingBox.origin.y) - ( 0.4 * height)
+                    let y = sceledHeight  * (1 - faceObservation.boundingBox.origin.y) + height
                     let width = self.view.frame.width * faceObservation.boundingBox.width
                     
-                     let FaceView = UIView()
                     
-                    FaceView.backgroundColor = .green
-                    FaceView.alpha = 0.4
-                    FaceView.frame = CGRect(x: x, y: y, width: width, height: height)
+                    let detectView = UIView()
                     
-                    self.view.addSubview(FaceView)
+                    
+                    detectView.layer.borderColor = UIColor.red.cgColor
+                    detectView.layer.borderWidth = 2
+                    detectView.layer.cornerRadius = 8
+                    detectView.backgroundColor = UIColor(white: 1, alpha: 0.5)
+                    detectView.frame = CGRect(x: x, y: y, width: width, height: height)
+                    
+                    // self.view.addSubview(detectView) // เพิ่ม detectView ใน view
+                    
+                  //  self.FaceView?.append(detectView) // เพิ่ม detectView ใน FaceView
                     print(faceObservation.boundingBox)
+                    
+                    
+                    let redView = UIView()
+                    redView.layer.borderColor = UIColor.red.cgColor
+                    redView.layer.borderWidth = 2
+                    redView.layer.cornerRadius = 8
+                    redView.frame = converted_rect
+                    redView.backgroundColor = UIColor(white: 1, alpha: 0.5)
+                    self.view.addSubview(redView)
+                    
+                    redView.layer.transform = CATransform3DMakeScale(0, 0, 0)
+                    
+                    UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+                        redView.layer.transform = CATransform3DMakeScale(1, 1, 1)
+                    }, completion: nil)
+                    
+                    self.FaceView?.append(redView)
                 }
                 
             })
