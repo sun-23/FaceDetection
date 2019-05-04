@@ -114,7 +114,7 @@ class ViewController: UIViewController {
         
         imageView.backgroundColor = .black
         
-        view.backgroundColor = .red
+        view.backgroundColor = .green
         
         
         view.addSubview(imageView)
@@ -140,13 +140,13 @@ class ViewController: UIViewController {
                     let y = sceledHeight * (1 - faceObservation.boundingBox.origin.y) - ( 0.4 * height)
                     let width = self.view.frame.width * faceObservation.boundingBox.width
                     
-                     let redView = UIView()
+                     let FaceView = UIView()
                     
-                    redView.backgroundColor = .red
-                    redView.alpha = 0.4
-                    redView.frame = CGRect(x: x, y: y, width: width, height: height)
+                    FaceView.backgroundColor = .green
+                    FaceView.alpha = 0.4
+                    FaceView.frame = CGRect(x: x, y: y, width: width, height: height)
                     
-                    self.view.addSubview(redView)
+                    self.view.addSubview(FaceView)
                     print(faceObservation.boundingBox)
                 }
                 
