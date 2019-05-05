@@ -116,7 +116,7 @@ class ViewController: UIViewController {
         let sceledHeight = view.frame.width / image.size.width * image.size.height
          let imageScaledHeight = view.frame.size.width / image.size.width * image.size.height
         
-        
+                                                                 // ให้ภาพอยู่จุดกึ่งกลางของ แกน y
         imageView.frame = CGRect(x: 0, y: view.frame.height - ( view.frame.height / 2 + sceledHeight / 2 ), width: view.frame.width, height: sceledHeight)
         
         imageView.backgroundColor = .black
@@ -133,7 +133,7 @@ class ViewController: UIViewController {
                 return
             }
             
-               self.FaceView = [] // FaceView เป็น array ที่ให้ detectView ไปใส่ค่าใน FaceView ที่เป็น UIView
+               self.FaceView = [] // FaceView เป็น array ที่ให้ redView ไปใส่ FaceView ที่เป็น UIView
             
             req.results?.forEach({ (res) in
                 
@@ -141,7 +141,7 @@ class ViewController: UIViewController {
                     
                     guard let faceObservation = res as? VNFaceObservation else {return}
                     
-                    
+                    // ระบุตำแหน่งของ faceObservation
                     let rect = faceObservation.boundingBox
                     
                     let transformFlip = CGAffineTransform.init(scaleX: 1, y: -1).translatedBy(x: 0, y: -imageScaledHeight - self.view.frame.height / 2  + imageScaledHeight / 2)
@@ -176,7 +176,7 @@ class ViewController: UIViewController {
                     redView.layer.cornerRadius = 8
                     redView.frame = converted_rect
                     redView.backgroundColor = UIColor(white: 1, alpha: 0.5)
-                    self.view.addSubview(redView)
+                    self.view.addSubview(redView) // เพิ่ม redView ใน view
                     
                     redView.layer.transform = CATransform3DMakeScale(0, 0, 0)
                     
@@ -184,7 +184,7 @@ class ViewController: UIViewController {
                         redView.layer.transform = CATransform3DMakeScale(1, 1, 1)
                     }, completion: nil)
                     
-                    self.FaceView?.append(redView)
+                    self.FaceView?.append(redView) // เพิ่ม redView ใน FaceView
                 }
                 
             })
